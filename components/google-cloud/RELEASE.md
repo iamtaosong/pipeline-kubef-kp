@@ -5,6 +5,7 @@
 * Disable caching when resolving model display names for RLHF-tuned models so a unique name is generated on each `preview.llm.rlhf_pipeline` run.
 * Upload the tuned adapter to Model Registry instead of model checkpoint from `preview.llm.rlhf_pipeline`.
 * Apply latest GCPC image vulnerability resolutions (base OS and software updates).
+* Add preview.llm.rlaif_pipeline.
 
 ## Release 2.8.0
 * Release AutoSxS pipeline to preview.
