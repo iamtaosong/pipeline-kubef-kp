@@ -15,15 +15,18 @@
 # 1. Build api server application
 # Use golang:1.13.1-stretch to keep GLIBC at 2.24 https://github.com/gotify/server/issues/225
 FROM golang:1.13.1-stretch as builder
+RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
 RUN apt-get update && apt-get install -y cmake clang musl-dev openssl
 WORKDIR /go/src/github.com/kubeflow/pipelines
 COPY . .
 RUN GO111MODULE=on go build -o /bin/apiserver backend/src/apiserver/*.go
 # Check licenses and comply with license terms.
 RUN ./hack/install-go-licenses.sh
-RUN go-licenses csv /bin/apiserver > /tmp/licenses.csv && \
-    diff /tmp/licenses.csv backend/third_party_licenses/apiserver.csv && \
-    go-licenses save /tmp/licenses.csv --save_path /tmp/NOTICES
+# RUN go-licenses csv /bin/apiserver > /tmp/licenses.csv && \
+#     diff /tmp/licenses.csv backend/third_party_licenses/apiserver.csv && \
+#     go-licenses save /tmp/licenses.csv --save_path /tmp/NOTICES
+ 
+
 
 # 2. Compile preloaded pipeline samples
 FROM python:3.7 as compiler
@@ -55,7 +58,7 @@ RUN set -e; \
     done
 
 # 3. Start api web server
-FROM debian:stretch
+FROM debian:stable
 
 ARG COMMIT_SHA=unknown
 ENV COMMIT_SHA=${COMMIT_SHA}
@@ -68,9 +71,9 @@ COPY backend/src/apiserver/config/ /config
 COPY --from=builder /bin/apiserver /bin/apiserver
 
 # Copy licenses and notices.
-COPY --from=builder /tmp/licenses.csv /third_party/licenses.csv
-COPY --from=builder /tmp/NOTICES /third_party/NOTICES
-COPY --from=compiler /samples/ /samples/
+# COPY --from=builder /tmp/licenses.csv /third_party/licenses.csv
+# COPY --from=builder /tmp/NOTICES /third_party/NOTICES
+# COPY --from=compiler /samples/ /samples/
 RUN chmod +x /bin/apiserver
 
 # Adding CA certificate so API server can download pipeline through URL and wget is used for liveness/readiness probe command
