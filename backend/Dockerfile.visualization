@@ -37,4 +37,5 @@ RUN python3 -m pip install -r requirements.txt --no-cache-dir
  
 COPY backend/src/apiserver/visualization /src
 
+# RUN rm -rf /usr/local/lib/python3.8/dist-packages
 ENTRYPOINT [ "python3", "server.py" ]
