@@ -53,3 +53,7 @@ COPY license.txt /third_party/license.txt
 
 ENTRYPOINT ["/usr/local/bin/envoy", "-c"]
 CMD ["/etc/envoy.yaml"]
+
+
+# docker build  . -t kubef/envoyproxy/envoy:v1.12.2
+# https://github.com/kubeflow/pipelines/blob/1.8.2/third_party/metadata_envoy/Dockerfile
