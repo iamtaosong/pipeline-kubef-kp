@@ -12,7 +12,7 @@
 # # See the License for the specific language governing permissions and
 # # limitations under the License.
 
-from gcr.io/ml-pipeline/api-server:1.8.2 as builder
+FROM gcr.io/ml-pipeline/api-server:1.8.2 as builder
 
 
 #. Start api web server
