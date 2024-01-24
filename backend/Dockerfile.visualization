@@ -38,7 +38,9 @@ RUN python3 -m pip install -r requirements.txt --no-cache-dir
  
 COPY backend/src/apiserver/visualization /src
 
-# RUN rm -rf /usr/local/lib/python3.8/dist-packages
+RUN rm -rf /usr/local/lib/python3.8/dist-packages/tornado/test
+RUN rm -rf /usr/local/gcloud/google-cloud-sdk/platform/gsutil/third-party/urllib3/dummyserver
+RUN rm -rf /usr/local/gcloud/google-cloud-sdk/platform/gsutil/third-party/google-auth-library-python/tests
 ENTRYPOINT [ "python3", "server.py" ]
 
 
