@@ -45,4 +45,4 @@ ENTRYPOINT [ "python3", "server.py" ]
 
 
 # https://github.com/kubeflow/pipelines/blob/1.8.2/backend/Dockerfile
-# docker build -f backend/Dockerfile.visualization .  -t  kubef/kp-visualization-server:1.8.1
+# docker build -f backend/Dockerfile.visualization .  -t  kubef/kp-visualization-server:1.8.2
