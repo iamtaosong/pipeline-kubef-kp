@@ -43,3 +43,6 @@ RUN sed -E "s#/(blob|tree)/master/#/\1/${COMMIT_SHA}/#g" -i /config/sample_confi
 
 # Expose apiserver port
 EXPOSE 8888
+
+
+# how to build :docker build -t kubef/ml-pipeline-api-server:1.8.2 -f backend/Dockerfile .
