@@ -541,7 +541,7 @@ typing-extensions==4.8.0
     #   tensorflow
 uritemplate==3.0.1
     # via google-api-python-client
-urllib3==1.26.16
+urllib3==1.26.17
     # via
     #   google-auth
     #   requests

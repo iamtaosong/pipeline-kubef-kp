@@ -23,7 +23,8 @@ FROM tensorflow/tensorflow:2.10.1
 RUN apt-get update \
   && apt-get install -y wget curl tar openssl
 
-RUN curl https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz > /tmp/google-cloud-sdk.tar.gz
+RUN curl https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-461.0.0-linux-x86_64.tar.gz> /tmp/google-cloud-sdk.tar.gz
+
 RUN mkdir -p /usr/local/gcloud
 RUN tar -C /usr/local/gcloud -xf /tmp/google-cloud-sdk.tar.gz
 RUN /usr/local/gcloud/google-cloud-sdk/install.sh
@@ -39,3 +40,7 @@ COPY backend/src/apiserver/visualization /src
 
 # RUN rm -rf /usr/local/lib/python3.8/dist-packages
 ENTRYPOINT [ "python3", "server.py" ]
+
+
+# https://github.com/kubeflow/pipelines/blob/1.8.2/backend/Dockerfile
+# docker build -f backend/Dockerfile.visualization .  -t  kubef/kp-visualization-server:1.8.1
