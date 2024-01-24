@@ -12,16 +12,44 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM envoyproxy/envoy:v1.12.2
 
+FROM envoyproxy/envoy:v1.12.2 as builder
+
+FROM ubuntu:22.04 as envoy
+
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y ca-certificates \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /tmp/* /var/tmp/* \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /etc/envoy
+
+COPY --from=builder /usr/local/bin/envoy /usr/local/bin/envoy
+COPY --from=builder /etc/envoy/envoy.yaml /etc/envoy/envoy.yaml
+COPY --from=builder /docker-entrypoint.sh /docker-entrypoint.sh
+ 
+
+EXPOSE 10000
+
+# COPY docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["envoy", "-c", "/etc/envoy/envoy.yaml"]
+
+
+
+ 
+From envoy
 RUN apt-get update -y && \
   apt-get install --no-install-recommends -y -q gettext openssl
 
-COPY third_party/metadata_envoy/envoy.yaml /etc/envoy.yaml
+COPY envoy.yaml /etc/envoy.yaml
 
 # Copy license files.
 #RUN mkdir -p /third_party
-COPY third_party/metadata_envoy/license.txt /third_party/license.txt
+COPY license.txt /third_party/license.txt
 
 ENTRYPOINT ["/usr/local/bin/envoy", "-c"]
 CMD ["/etc/envoy.yaml"]
