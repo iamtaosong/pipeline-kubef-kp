@@ -39,8 +39,18 @@ RUN python3 -m pip install -r requirements.txt --no-cache-dir
 COPY backend/src/apiserver/visualization /src
 
 RUN rm -rf /usr/local/lib/python3.8/dist-packages/tornado/test
-RUN rm -rf /usr/local/gcloud/google-cloud-sdk/platform/gsutil/third-party/urllib3/dummyserver
-RUN rm -rf /usr/local/gcloud/google-cloud-sdk/platform/gsutil/third-party/google-auth-library-python/tests
+RUN rm -rf /usr/local/gcloud/google-cloud-sdk/platform/gsutil/third_party/urllib3/dummyserver/certs/cacert.key
+RUN rm -f  /usr/local/gcloud/google-cloud-sdk/platform/gsutil/third_party/urllib3/dummyserver/certs/server.key
+RUN rm -rf /usr/local/gcloud/google-cloud-sdk/platform/gsutil/third_party/google-auth-library-python/tests/data/privatekey.pem
+RUN rm -rf /usr/local/gcloud/google-cloud-sdk/platform/gsutil/third_party/google-auth-library-python/tests
+RUN rm -rf /usr/local/gcloud/google-cloud-sdk/platform/gsutil/third_party/google-auth-library-python/tests/data/pem_from_pkcs12.pem
+RUN rm -rf /usr/local/gcloud/google-cloud-sdk/platform/gsutil/third_party/google-auth-library-python/tests/data/es256_privatekey.pem
+ 
+ 
+ 
+
+
+
 ENTRYPOINT [ "python3", "server.py" ]
 
 
