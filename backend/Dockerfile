@@ -25,17 +25,17 @@ ENV TAG_NAME=${TAG_NAME}
 
 WORKDIR /bin
 
-COPY backend/src/apiserver/config/ /config
+COPY --from=builder /config /config
 COPY --from=builder /bin/apiserver /bin/apiserver
 
 # Copy licenses and notices.
 COPY --from=builder /third_party/licenses.csv /third_party/licenses.csv
 COPY --from=builder  /third_party/NOTICES /third_party/NOTICES
-# COPY --from=compiler /samples/ /samples/
+COPY --from=builder /samples/ /samples/
 RUN chmod +x /bin/apiserver
 
 # # Adding CA certificate so API server can download pipeline through URL and wget is used for liveness/readiness probe command
-RUN apt-get update && apt-get install -y ca-certificates wget
+RUN apt-get update -y && apt-get upgrade -y  && apt-get install -y ca-certificates wget
 
 # Pin sample doc links to the commit that built the backend image
 RUN sed -E "s#/(blob|tree)/master/#/\1/${COMMIT_SHA}/#g" -i /config/sample_config.json && \
