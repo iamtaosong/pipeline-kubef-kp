@@ -1,36 +1,50 @@
-FROM node:14.18.2 as build
+# FROM node:14.18.2 as build
 
-ARG COMMIT_HASH
-ENV COMMIT_HASH=${COMMIT_HASH}
-ARG TAG_NAME
-ENV TAG_NAME=${TAG_NAME}
+# ARG COMMIT_HASH
+# ENV COMMIT_HASH=${COMMIT_HASH}
+# ARG TAG_NAME
+# ENV TAG_NAME=${TAG_NAME}
 
-ARG DATE
+# ARG DATE
 
-WORKDIR ./src
+# WORKDIR ./src
 
-COPY . .
+# COPY . .
 
-WORKDIR ./frontend
+# WORKDIR ./frontend
 
-RUN npm ci && npm run postinstall
-RUN npm run build
+# RUN npm ci && npm run postinstall
+# RUN npm run build
 
-RUN mkdir -p ./server/dist && \
-    echo ${COMMIT_HASH} > ./server/dist/COMMIT_HASH && \
-    echo ${DATE} > ./server/dist/BUILD_DATE && \
-    echo ${TAG_NAME} > ./server/dist/TAG_NAME
+# RUN mkdir -p ./server/dist && \
+#     echo ${COMMIT_HASH} > ./server/dist/COMMIT_HASH && \
+#     echo ${DATE} > ./server/dist/BUILD_DATE && \
+#     echo ${TAG_NAME} > ./server/dist/TAG_NAME
 
-# Generate the dependency licenses files (one for the UI and one for the webserver),
-# concatenate them to one file under ./src/server
-RUN npm i -D license-checker
-RUN node gen_licenses . && node gen_licenses server && \
-    cat dependency-licenses.txt >> server/dependency-licenses.txt
+# # Generate the dependency licenses files (one for the UI and one for the webserver),
+# # concatenate them to one file under ./src/server
+# RUN npm i -D license-checker
+# RUN node gen_licenses . && node gen_licenses server && \
+#     cat dependency-licenses.txt >> server/dependency-licenses.txt
 
-FROM node:14.18.2-alpine
+# FROM node:14.18.2-alpine
 
-COPY --from=build ./src/frontend/server /server
-COPY --from=build ./src/frontend/build /client
+# COPY --from=build ./src/frontend/server /server
+# COPY --from=build ./src/frontend/build /client
+
+# WORKDIR /server
+
+# EXPOSE 3000
+# RUN npm run build
+# ENV API_SERVER_ADDRESS http://localhost:3001
+# CMD node dist/server.js ../client/ 3000
+
+FROM gcr.io/ml-pipeline/frontend:1.8.5 as build 
+
+FROM node:21.6.0-alpine3.18
+
+COPY --from=build /server /server
+COPY --from=build /client /client
 
 WORKDIR /server
 
