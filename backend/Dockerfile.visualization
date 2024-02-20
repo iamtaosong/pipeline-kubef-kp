@@ -46,10 +46,6 @@ RUN rm -rf /usr/local/gcloud/google-cloud-sdk/platform/gsutil/third_party/google
 RUN rm -rf /usr/local/gcloud/google-cloud-sdk/platform/gsutil/third_party/google-auth-library-python/tests/data/pem_from_pkcs12.pem
 RUN rm -rf /usr/local/gcloud/google-cloud-sdk/platform/gsutil/third_party/google-auth-library-python/tests/data/es256_privatekey.pem
  
- 
- 
-
-
 
 ENTRYPOINT [ "python3", "server.py" ]
 
