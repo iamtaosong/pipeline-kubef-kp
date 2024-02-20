@@ -16,8 +16,8 @@ FROM gcr.io/ml-pipeline/api-server:1.8.2 as builder
 
 
 #. Start api web server
-FROM debian:stable
-
+FROM debian:11
+# FROM ubuntu:22.04
 ARG COMMIT_SHA=unknown
 ENV COMMIT_SHA=${COMMIT_SHA}
 ARG TAG_NAME=unknown
@@ -31,11 +31,11 @@ COPY --from=builder /bin/apiserver /bin/apiserver
 # Copy licenses and notices.
 COPY --from=builder /third_party/licenses.csv /third_party/licenses.csv
 COPY --from=builder  /third_party/NOTICES /third_party/NOTICES
-COPY --from=builder /samples/ /samples/
+# COPY --from=builder /samples/ /samples/
 RUN chmod +x /bin/apiserver
 
-# # Adding CA certificate so API server can download pipeline through URL and wget is used for liveness/readiness probe command
-RUN apt-get update -y && apt-get upgrade -y  && apt-get install -y ca-certificates wget
+# Adding CA certificate so API server can download pipeline through URL and wget is used for liveness/readiness probe command
+RUN apt-get update  -o AllowUnauthenticated=true && apt-get install -y ca-certificates wget  
 
 # Pin sample doc links to the commit that built the backend image
 RUN sed -E "s#/(blob|tree)/master/#/\1/${COMMIT_SHA}/#g" -i /config/sample_config.json && \
@@ -44,5 +44,7 @@ RUN sed -E "s#/(blob|tree)/master/#/\1/${COMMIT_SHA}/#g" -i /config/sample_confi
 # Expose apiserver port
 EXPOSE 8888
 
+# Start the apiserver
+CMD /bin/apiserver --config=/config --sampleconfig=/config/sample_config.json -logtostderr=true
 
-# how to build :docker build -t kubef/ml-pipeline-api-server:1.8.2 -f backend/Dockerfile .
+# how to build :docker build -t kubef/ml-pipeline-api-server:1.8.2 -f Dockerfile .
